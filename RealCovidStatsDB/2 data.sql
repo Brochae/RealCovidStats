@@ -1,14 +1,24 @@
-insert users(UserFirstName, UserLastName, UserDOB, UserSSN, HealthStatus, FirstOrSecondWave, DeltaWave, OmicronWave, DateReceivedDisease, DegreeOfSymptom, LossOfTasteAndSmell, ListOfSymptoms, VaccinationStatus, VaccineCompany, DateOfVaccine, BoosterStatus, BoosterCompany)
+use RealCovidStatsDB
+go 
+delete Users
+
+insert users(UserFirstName, UserLastName, UserDOB, UserSSN, HealthStatus, FirstOrSecondWave, DeltaWave, OmicronWave, DateReceivedDisease, FirstOrSecondWaveDegreeOfSymptom, DeltaWaveDegreeOfSymptom, OmicronWaveDegreeOfSymptom, LossOfTasteAndSmell, ListOfSymptoms, VaccinationStatus, VaccineCompany, DateOfVaccine, BoosterStatus, BoosterCompany)
 select 
     UserFirstName = m.FirstName,
     UserLastName = m.LastName,
-    UserDOB = 
-        case 
-            when m.Season = 'winter' then concat(m.YearBorn, '-', '01', '-', '01')
-            when m.Season = 'spring' then concat(m.YearBorn, '-', '05', '-', '01')
-            when m.Season = 'summer' then concat(m.YearBorn, '-', '07', '-', '01')
-            when m.Season = 'fall' then concat(m.YearBorn, '-', '10', '-', '01')
+    UserDOB = DATEFROMPARTS(
+        case   
+            when RIGHT(m.YearBorn, 2) > 22 then CONCAT(19, CONVERT(int, RIGHT(m.YearBorn, 2)))
+            when RIGHT(m.YearBorn, 2) < 10 then CONCAT(200, CONVERT(int, RIGHT(m.YearBorn, 2)))
+            else CONCAT(20, CONVERT(int, RIGHT(m.YearBorn, 2)))
+        end, 
+        case m.Season
+            when 'Summer' then 7
+            when 'Fall' then 10
+            when 'Spring' then 5
+            when 'Winter' then 1
         end,
+        1),
     UserSSN =  m.YearBorn - len(m.FirstName + m.LastName),
     HealthStatus = 
         case 
@@ -23,12 +33,12 @@ select
     end,
     DeltaWave = 
     case
-        when m.FirstName like '[l-z]%' then 1
+        when m.FirstName like '[l-z]%' and LEN(m.FirstName) < 11 then 1
         else 0
     end,
     OmicronWave = 
     case 
-        when m.LastName like '[g-q]%' then 1
+        when m.LastName like '[g-q]%' and LEN(m.FirstName) < 11 then 1
         else 0
     end,
     DateReceivedDisease = 
@@ -37,13 +47,30 @@ select
         when m.FirstName like '[l-z]%' then '2021-08-20'
         when m.LastName like '[g-q]%' then '2021-11-26'
     end,
-    DegreeOfSymptons = 
+    FirstOrSecondWaveDegreeOfSymptons = 
     case 
-        when len(m.FirstName) between 1 and 4 then 'mild'
-        when len(m.FirstName) between 5 and 6 then 'moderate'
-        when len(m.FirstName) between 7 and 8 then 'harsh'
-        when len(m.FirstName) between 9 and 10 then 'extreme'
-        when len(m.FirstName) > 11 then 'died'
+        when m.FirstName like '[a-k]%' and len(m.FirstName) between 1 and 4 then 'mild'
+        when m.FirstName like '[a-k]%' and len(m.FirstName) between 5 and 6 then 'moderate'
+        when m.FirstName like '[a-k]%' and len(m.FirstName) between 7 and 8 then 'harsh'
+        when m.FirstName like '[a-k]%' and len(m.FirstName) between 9 and 10 then 'extreme'
+        when m.FirstName like '[a-k]%' and len(m.FirstName) >= 11 then 'died'
+        else null
+    end,
+    DeltaWaveDegreeOfSymptoms = 
+        case 
+        when m.FirstName like '[l-z]%' and len(m.FirstName) between 1 and 4 then 'mild'
+        when m.FirstName like '[l-z]%' and len(m.FirstName) between 5 and 6 then 'moderate'
+        when m.FirstName like '[l-z]%' and len(m.FirstName) between 7 and 8 then 'harsh'
+        when m.FirstName like '[l-z]%' and len(m.FirstName) between 9 and 10 then 'extreme'
+        else null
+    end,
+    OmicronWaveDegreeOfSymptoms = 
+        case 
+        when m.LastName like '[g-q]%' and len(m.FirstName) between 1 and 4 then 'mild'
+        when m.LastName like '[g-q]%' and len(m.FirstName) between 5 and 6 then 'moderate'
+        when m.LastName like '[g-q]%' and len(m.FirstName) between 7 and 8 then 'harsh'
+        when m.LastName like '[g-q]%' and len(m.FirstName) between 9 and 10 then 'extreme'
+        else null
     end,
     LossOfTasteAndSmell = 
     case 
