@@ -59,35 +59,38 @@ select
     end,
     VaccinationStatus = 
     case 
-        when m.Country = 'United States' or 
-            m.Country = 'Great Britain' or 
-            m.Country = 'russia' or 
-            m.Country = 'china' 
-        then 1
+        when m.Country in ('Russia', 'United States', 'Great Britian', 'China') then 1
         else 0
     end,
     VaccineCompany = 
     case 
-        when m.Country = 'United States' or m.Country = 'Great Britain' then 'Pfizer'
+        when m.Country in ('United States', 'Great Britian') then 'Pfizer'
         when m.Country = 'China' then 'Moderna'
         when m.Country = 'Russia' then 'J&J'
+        else null 
     end,
     DateOfVaccine = 
-    case
-    when m.Country = 'United States' or 
-            m.Country = 'Great Britain' or 
-            m.Country = 'russia' or 
-            m.Country = 'china' 
-    then     '01/01/2021' --wrong date inserted. requirement doesn't make senses.
+    case 
+        when m.Country in ('Russia', 'United States', 'Great Britian', 'China')
+            then DATEFROMPARTS(2021, 
+                case m.Season
+                    when 'Summer' then 7
+                    when 'Fall' then 10
+                    when 'Spring' then 5
+                    when 'Winter' then 1
+                end,
+                1)
+        else null
     end,
     BoosterStatus = 
     case 
-        when m.Medal = 'gold' then 2
-        when m.Medal = 'silver' then 1
-        when m.Medal = 'bronze' then 0 
+        when m.Country in ('Russia', 'United States', 'Great Britian', 'China') and m.Medal = 'gold' then 2
+        when m.Country in ('Russia', 'United States', 'Great Britian', 'China') and m.Medal = 'silver' then 1
+        else null
     end,
-    BoosterCompany = 
-    'moderna' 
-from RecordKeeperDB.dbo.medalist m 
-
-select * from users u 
+    BoosterCompany =    
+    case 
+        when m.Country in ('Russia', 'United States', 'Great Britian', 'China') and m.Medal in('gold', 'silver') then 'moderna'
+        else null
+    end
+from RecordKeeperDB.dbo.medalist m
