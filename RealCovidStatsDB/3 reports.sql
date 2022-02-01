@@ -60,31 +60,6 @@ from Users u
 group by u.FirstOrSecondWave, u.DeltaWave, u.OmicronWave
 order by NumOfCovidCases desc
 /*4) The same idea as the report before, just this time I want to know about the symptoms of those vaccinated - were they any better or worse than the general population?*/
-select u.ListOfSymptoms
-from users u 
-where u.HealthStatus = 'healthy' and u.FirstOrSecondWave = 1
-
-select u.ListOfSymptoms
-from users u 
-where u.VaccinationStatus = 1 and u.FirstOrSecondWave = 1
-
-select u.ListOfSymptoms
-from users u 
-where u.HealthStatus = 'healthy' and u.DeltaWave = 1
-
-select u.ListOfSymptoms
-from users u 
-where u.VaccinationStatus = 1 and u.DeltaWave = 1
-
-select u.ListOfSymptoms
-from users u 
-where u.HealthStatus = 'healthy' and u.OmicronWave = 1
-
-select u.ListOfSymptoms
-from users u 
-where u.VaccinationStatus = 1 and u.OmicronWave = 1
-
---
 select AmountPerCategory = COUNT(*), u.VaccinationStatus, DegreeOfSymptoms = 
     case 
         when u.FirstOrSecondWaveDegreeOfSymptom = 'mild' or u.DeltaWaveDegreeOfSymptom = 'mild' or u.OmicronWaveDegreeOfSymptom = 'mild' then '1-mild'
@@ -123,8 +98,7 @@ group by
         when u.FirstOrSecondWaveDegreeOfSymptom = 'died' then '5-died'
     end
 order by DegreeOfSymptoms, AmountPerCategory desc
---Please ensure to also include in the reports the relationship between each underlying condtion and the degree of syptoms, 
---compared to how common the same system was with the general public.
+
 
 select AmountPerCategory = COUNT(*), u.HealthStatus, DegreeOfSymptoms = 
     case 
