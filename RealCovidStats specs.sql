@@ -1,5 +1,18 @@
-/*
-
+/*First Name, 
+Last Name, 
+DOB, 
+Last for digits of SSN, 
+Covid-19 - the first or second wave (Y/N), 
+Delta wave (Y/N), 
+Omicron wave (Y/N), 
+Degree of symptoms each time around, 
+Loss of taste and/smell each time around,
+coomon symptoms
+Vaccination status (Y/N), 
+If yes, which one and when, 
+Boosters (0,1,2,3,4),
+Underlying Condition
+date contracted virus
 -----------
 create new database for this table
 create new folder for database, and organize files properly
@@ -47,6 +60,8 @@ Question: There was a lot of talk about underlying conditions that effect covid 
 Answer: Of course! How could I have forgotten?!?! Thanks for reminding me. Please ensure to also include in the reports the relationship
 between each underlying condtion and the degree of syptoms, compared to how common the same symptom was with the general public.
 
+
+???
 Question: A few times you said you want something compared to 'the general public' - what exactly do you mean by that, literally everyone? 
 or everyone without underlying conditions?
 Answer: Good question! But a hard one to answer :( it's the age-old issue of averages misrepresenting the population due to the extremes that throw 
@@ -63,8 +78,9 @@ I heard you have a table called Medalists.
                    May 1st of the last two digits of the year born for the Spring Medalists
                    July 1st of the last two digits of the year born for the Summer Medalists
                    October 1st of the last two digits of the year bor for the Fall Medalists
+                   ------less than 100
 -For the last 4 digits of the SSN - do the year born minus the number of characters that the Medalist has in their First and Last Names combined
-    (You may either include the spaces or not, just remember the rule: ALL or NONE but not SOME)
+    (You may either include the spaces or not, just remember the rule: ALL or NONE but not SOME) sum len name 
 -For simplicity's sake, all the gold medalists will be healthy, all silver medalists will have hypertension, all bronze medalista will have diabetes.
     However, please do not limit it to these categories for the real data - this is just for the sample.
 -For when each medalist got covid:
